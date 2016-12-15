@@ -3,6 +3,8 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation
 from keras.optimizers import RMSprop
 from IPython.display import clear_output
+from keras.models import model_from_json
+import h5py
 import random
 
 def randPair(s,e):
@@ -208,3 +210,17 @@ for i in range(epochs):
         clear_output(wait=True)
     if epsilon > 0.1:
         epsilon -= (1/epochs)
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("model.h5")
+    print("Saved model to disk")
+    # load json and create model
+    json_file = open('model.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights("model.h5")
+    print("Loaded model from disk")
