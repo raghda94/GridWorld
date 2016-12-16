@@ -203,7 +203,7 @@ for i in range(epochs):
             update = reward
         y[0][action] = update #target output
         print("Game #: %s" % (i,))
-        model.fit(state.reshape(1,80), y, batch_size=1, nb_epoch=1, verbose=1)
+        model.fit(state.reshape(1,80), y, batch_size=1, nb_epoch=10, verbose=1)
         state = new_state
         if reward != -1:
             status = 0
