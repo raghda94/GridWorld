@@ -138,6 +138,7 @@ def makeMove(state, action, isComputer= True):
     state[wall][2] = 1
     #re-place goal
     state[goal][0] = 1
+    state[other_loc][other_level] =1 
     return state
 
 def getLoc(state, level):
