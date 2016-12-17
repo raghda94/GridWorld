@@ -255,7 +255,20 @@ def train(noOfepochs):
         print("Loaded model from disk")
 
 def hardTrain(noOfepochs):
+    model = Sequential()
+    model.add(Dense(164, init='lecun_uniform', input_shape=(80,)))
+    model.add(Activation('relu'))
+    #model.add(Dropout(0.2)) I'm not using dropout, but maybe you wanna give it a try?
 
+    model.add(Dense(150, init='lecun_uniform'))
+    model.add(Activation('relu'))
+    #model.add(Dropout(0.2))
+
+    model.add(Dense(4, init='lecun_uniform'))
+    model.add(Activation('linear')) #linear output so we can have range of real-valued outputs
+
+    rms = RMSprop()
+    model = Sequential()
     model.compile(loss='mse', optimizer=rms)#reset weights of neural network
     gamma = 0.975
     epsilon = 1
