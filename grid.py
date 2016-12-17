@@ -77,7 +77,7 @@ def initGridRand():
     g = findLoc(state, np.array([1,0,0,0,0]))
     p = findLoc(state, np.array([0,1,0,0,0]))
     #If any of the "objects" are superimposed, just call the function again to re-place
-    if (not a or not w or not g or not p):
+    if (not a or not w or not g or not p or not a1):
         #print('Invalid grid. Rebuilding..')
         return initGridRand()
 
@@ -268,7 +268,6 @@ def hardTrain(noOfepochs):
     model.add(Activation('linear')) #linear output so we can have range of real-valued outputs
 
     rms = RMSprop()
-    model = Sequential()
     model.compile(loss='mse', optimizer=rms)#reset weights of neural network
     gamma = 0.975
     epsilon = 1
@@ -335,6 +334,20 @@ def hardTrain(noOfepochs):
             clear_output(wait=True)
         if epsilon > 0.1: #decrement epsilon over time
             epsilon -= (1/epochs)
+        model_json = model.to_json()
+        with open("model.json", "w") as json_file:
+            json_file.write(model_json)
+        # serialize weights to HDF5
+        model.save_weights("model.h5")
+        print("Saved model to disk")
+        # load json and create model
+        json_file = open('model.json', 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        loaded_model = model_from_json(loaded_model_json)
+        # load weights into new model
+        loaded_model.load_weights("model.h5")
+        print("Loaded model from disk")
 
 def testAlgoSingle(init=0):
     i = 0
@@ -348,6 +361,20 @@ def testAlgoSingle(init=0):
     print("Initial State:")
     print(dispGrid(state))
     status = 1
+    model = Sequential()
+    model.add(Dense(164, init='lecun_uniform', input_shape=(80,)))
+    model.add(Activation('relu'))
+    #model.add(Dropout(0.2)) I'm not using dropout, but maybe you wanna give it a try?
+
+    model.add(Dense(150, init='lecun_uniform'))
+    model.add(Activation('relu'))
+    #model.add(Dropout(0.2))
+
+    model.add(Dense(4, init='lecun_uniform'))
+    model.add(Activation('linear')) #linear output so we can have range of real-valued outputs
+
+    rms = RMSprop()
+    model.compile(loss='mse', optimizer=rms)
     #while game still in progress
     while(status == 1):
         qval = model.predict(state.reshape(1,80), batch_size=1)
@@ -376,6 +403,20 @@ def testAlgoMulti(init=0):
     print("Initial State:")
     print(dispGrid(state))
     status = 1
+    model = Sequential()
+    model.add(Dense(164, init='lecun_uniform', input_shape=(80,)))
+    model.add(Activation('relu'))
+    #model.add(Dropout(0.2)) I'm not using dropout, but maybe you wanna give it a try?
+
+    model.add(Dense(150, init='lecun_uniform'))
+    model.add(Activation('relu'))
+    #model.add(Dropout(0.2))
+
+    model.add(Dense(4, init='lecun_uniform'))
+    model.add(Activation('linear')) #linear output so we can have range of real-valued outputs
+
+    rms = RMSprop()
+    model.compile(loss='mse', optimizer=rms)
     #while game still in progress
     while(status == 1):
         print ("Enter your action 0, 1, 2, 3 for up, down , left, right ")
