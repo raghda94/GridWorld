@@ -83,7 +83,7 @@ def initGridRand():
 
     return state
 
-def makeMove(state, action, isComputer= True):
+def makeMove(state, action, isComputer= True, isPlaying= False):
     #need to locate player in grid
     #need to determine what object (if any) is in the new grid spot the player is moving to
     if isComputer:
@@ -138,7 +138,8 @@ def makeMove(state, action, isComputer= True):
     state[wall][2] = 1
     #re-place goal
     state[goal][0] = 1
-    state[other_loc][other_level] =1 
+    if isPlaying:
+        state[other_loc][other_level] =1
     return state
 
 def getLoc(state, level):
@@ -426,8 +427,8 @@ def testAlgoMulti(init=0):
         action = (np.argmax(qval)) #take action with highest Q-value
         print('Move #: %s; Computer Taking action: %s' % (i, action))
         print('Move #: %s; Player Taking action: %s' % (i, inp))
-        state = makeMove(state, action)
-        state = makeMove(state, inp, False)
+        state = makeMove(state, action, True, True)
+        state = makeMove(state, inp, False, True)
         reward = getReward(state)
         mReward = getReward(state, False)
         print(dispGrid(state))
